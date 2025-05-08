@@ -32,15 +32,6 @@ export function openDatabase() {
                 db.createObjectStore('info', {keyPath: 'fakeid'})
             }
 
-
-            // 创建v2版本相关的数据库
-            if (!db.objectStoreNames.contains('api')) {
-                const apiStore = db.createObjectStore('api', {autoIncrement: true})
-                apiStore.createIndex('account', 'account')
-                apiStore.createIndex('account_call_time', ['account', 'call_time'])
-            }
-
-
             // 创建v3版本相关的数据库
             if (!db.objectStoreNames.contains('proxy')) {
                 db.createObjectStore('proxy', {keyPath: 'address'})

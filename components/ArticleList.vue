@@ -13,8 +13,6 @@
             :is-deleted="article.is_deleted"
             :link="article.link"
             :updatedAt="article.update_time"
-            :is-original="article.copyright_stat === 1 && article.copyright_type === 1"
-            :album-infos="article.appmsg_album_infos"
             :item-show-type="article.item_show_type"
         />
       </ul>

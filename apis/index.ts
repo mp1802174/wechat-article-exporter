@@ -7,9 +7,7 @@ import type {
     SearchBizResponse
 } from "~/types/types";
 import {ACCOUNT_LIST_PAGE_SIZE, ARTICLE_LIST_PAGE_SIZE} from "~/config";
-import {updateAPICache} from "~/store/api";
 import {updateArticleCache} from "~/store/article";
-import type {CommentResponse} from "~/types/comment";
 
 interface AuthorInfoResponse {
     base_resp: {ret: number}
@@ -51,20 +49,6 @@ export async function getArticleList(fakeid: string, token: string, begin = 0, k
             keyword: keyword,
         },
         retry: 0,
-    })
-
-    // 记录 api 调用
-    await updateAPICache({
-        name: 'appmsgpublish',
-        account: loginAccount.value.nickname!,
-        call_time: new Date().getTime(),
-        is_normal: resp.base_resp.ret === 0 || resp.base_resp.ret === 200003,
-        payload: {
-            id: fakeid,
-            begin: begin,
-            size: ARTICLE_LIST_PAGE_SIZE,
-            keyword: keyword,
-        }
     })
 
     if (resp.base_resp.ret === 0) {
@@ -114,19 +98,6 @@ export async function getAccountList(token: string, begin = 0, keyword = ''): Pr
         retry: 0,
     })
 
-    // 记录 api 调用
-    await updateAPICache({
-        name: 'searchbiz',
-        account: loginAccount.value.nickname!,
-        call_time: new Date().getTime(),
-        is_normal: resp.base_resp.ret === 0 || resp.base_resp.ret === 200003,
-        payload: {
-            begin: begin,
-            size: ACCOUNT_LIST_PAGE_SIZE,
-            keyword: keyword,
-        }
-    })
-
     if (resp.base_resp.ret === 0) {
         // 公众号判断是否结束的逻辑与文章不太一样
         // 当第一页的结果就少于5个则结束，否则只有当搜索结果为空才表示结束
@@ -137,36 +108,5 @@ export async function getAccountList(token: string, begin = 0, keyword = ''): Pr
         throw new Error('session expired')
     } else {
         throw new Error(`${resp.base_resp.ret}:${resp.base_resp.err_msg}`)
-    }
-}
-
-/**
- * 获取评论
- * @param commentId
- */
-export async function getComment(commentId: string) {
-    try {
-        // 本地设置的 credentials
-        const credentials = JSON.parse(window.localStorage.getItem('credentials')!)
-        if (!credentials || !credentials.__biz || !credentials.pass_ticket || !credentials.key || !credentials.uin) {
-            console.log('credentials not set')
-            return null
-        }
-        const response = await $fetch<CommentResponse>('/api/comment', {
-            method: 'get',
-            query: {
-                comment_id: commentId,
-                ...credentials,
-            },
-            retry: 0,
-        })
-        if (response.base_resp.ret === 0) {
-            return response
-        } else {
-            return null
-        }
-    } catch (e) {
-        console.warn('credentials parse error', e)
-        return null
     }
 }

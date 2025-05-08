@@ -6,7 +6,6 @@ import {getAssetCache, updateAssetCache} from "~/store/assetes";
 import * as pool from '~/utils/pool';
 import type {DownloadableArticle} from "~/types/types";
 import type {AudioResource, VideoPageInfo} from "~/types/video";
-import {getComment} from "~/apis";
 
 
 export function formatTimeStamp(timestamp: number) {
@@ -275,72 +274,6 @@ export async function packHTMLAssets(html: string, title: string, zip?: JSZip) {
             link.className = js_share_source.className
             link.innerHTML = js_share_source.innerHTML
             js_share_source.replaceWith(link)
-        }
-    }
-
-    // 下载留言数据
-    let commentHTML = ''
-    const commentIdMatchResult = html.match(/var comment_id = '(?<comment_id>\d+)' \|\| '0';/)
-    if (commentIdMatchResult && commentIdMatchResult.groups && commentIdMatchResult.groups.comment_id) {
-        const comment_id = commentIdMatchResult.groups.comment_id
-        const commentResponse = await getComment(comment_id)
-        // 抓到了留言数据
-        if (commentResponse) {
-            // 留言总数
-            const totalCount = commentResponse.elected_comment.length + commentResponse.elected_comment.reduce((total, item) => {
-                return total + item.reply_new.reply_total_cnt
-            }, 0)
-
-            commentHTML += '<div style="max-width: 667px;margin: 0 auto;padding: 10px 10px 80px;">'
-            commentHTML += `<p style="font-size: 15px;color: #949494;">留言 ${totalCount}</p>`
-            commentHTML += '<div style="margin-top: -10px;">'
-            commentResponse.elected_comment.forEach((comment) => {
-                commentHTML += '<div style="margin-top: 25px;"><div style="display: flex;">'
-                if ([1, 2].includes(comment.identity_type)) {
-                    commentHTML += `<img src="${comment.logo_url}" style="display: block;width: 30px;height: 30px;border-radius: 50%;margin-right: 8px;" alt="">`
-                } else {
-                    commentHTML += `<img src="${comment.logo_url}" style="display: block;width: 30px;height: 30px;border-radius: 2px;margin-right: 8px;" alt="">`
-                }
-                commentHTML += '<div style="flex: 1;"><p style="display: flex;line-height: 16px;margin-bottom: 5px;">'
-                commentHTML += `<span style="margin-right: 5px;font-size: 15px;color: #949494;">${comment.nick_name}</span>`
-                commentHTML += `<span style="margin-right: 5px;font-size: 12px;color: #b5b5b5;">${comment?.ip_wording?.province_name}</span>`
-                commentHTML += `<span style="font-size: 12px;color: #b5b5b5;">${formatAlbumTime(comment.create_time)}</span>`
-                commentHTML += '<span style="flex: 1;"></span><span style="display: inline-flex;align-items: center;">'
-                commentHTML += `<span class="sns_opr_btn sns_praise_btn" style="font-size: 12px;color: #8b8a8a;">${comment.like_num || ''}</span>`
-                commentHTML += '</span></p>'
-                commentHTML += `<p style="font-size: 15px;color: #333;white-space: pre-line;">${comment.content}</p>`
-                commentHTML += '</div></div>'
-
-                if (comment.reply_new && comment.reply_new.reply_list.length > 0) {
-                    commentHTML += '<div style="padding-left: 38px;">'
-                    comment.reply_new.reply_list.forEach((reply) => {
-                        commentHTML += '<div style="display: flex;margin-top: 15px;">'
-                        if ([1, 2].includes(reply.identity_type)) {
-                            commentHTML += `<img src="${reply.logo_url}" style="display: block;width: 23px;height: 23px;border-radius: 50%;margin-right: 8px;" alt="">`
-                        } else {
-                            commentHTML += `<img src="${reply.logo_url}" style="display: block;width: 23px;height: 23px;border-radius: 2px;margin-right: 8px;" alt="">`
-                        }
-                        commentHTML += '<div style="flex: 1;"><p style="display: flex;line-height: 16px;margin-bottom: 5px;">'
-                        commentHTML += `<span style="margin-right: 5px;font-size: 15px;color: #949494;">${reply.nick_name}</span>`
-                        commentHTML += `<span style="margin-right: 5px;font-size: 12px;color: #b5b5b5;">${reply?.ip_wording?.province_name}</span>`
-                        commentHTML += `<span style="font-size: 12px;color: #b5b5b5;">${formatAlbumTime(reply.create_time)}</span>`
-                        commentHTML += '<span style="flex: 1;"></span><span style="display: inline-flex;align-items: center; font-size: 12px;color: #b5b5b5;">'
-                        commentHTML += `<span class="sns_opr_btn sns_praise_btn" style="font-size: 12px;color: #8b8a8a;">${reply.reply_like_num || ''}</span>`
-                        commentHTML += '</span></p>'
-                        commentHTML += `<p style="font-size: 15px;color: #333;white-space: pre-line;">${reply.content}</p>`
-                        commentHTML += '</div></div>'
-                    })
-                    commentHTML += '</div>'
-                }
-                if (comment.reply_new.reply_total_cnt - comment.reply_new.reply_list.length > 0) {
-                    commentHTML += '<p style="display: flex;align-items: center; font-size: 14px;color: #a3a0a0;padding-left: 38px;padding-top: 5px;">'
-                    commentHTML += `<span>${comment.reply_new.reply_total_cnt - comment.reply_new.reply_list.length}条回复</span>`
-                    commentHTML += '<img src="https://wxa.wxs.qq.com/images/wxapp/feedback_icon.png" alt="" style="filter: invert(1);width: 10px;height: 6px;margin-left: 5px;">'
-                    commentHTML += '</p>'
-                }
-                commentHTML += '</div>'
-            })
-            commentHTML += '</div></div>'
         }
     }
 

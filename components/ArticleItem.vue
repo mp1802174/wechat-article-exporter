@@ -10,15 +10,10 @@
     </div>
     <div class="p-6 flex flex-col space-y-2">
       <span class="absolute top-0 right-0 rounded text-zinc-600 bg-[rgba(255,255,255,.8)] py-1 px-2 font-mono">#{{ index }}</span>
-      <h3 class="text-xl text-blue-800 font-semibold" :class="isOriginal ? 'original' : ''" v-html="title"></h3>
+      <h3 class="text-xl text-blue-800 font-semibold" v-html="title"></h3>
       <time class="hidden whitespace-nowrap text-sm text-gray-500 md:block">{{ formatTimeStamp(updatedAt) }}</time>
 <!--      <p class="flex-1 text-zinc-400 text-sm pb-4">{{ digest }}</p>-->
       <p class="text-sm text-gray-500 pb-4">类型: <span>{{formatItemShowType(itemShowType)}}</span></p>
-      <ul class="flex flex-wrap space-x-2">
-        <li class="text-blue-500 text-sm" v-for="album in albumInfos" :key="album.id">
-          <a :href="getAlbumURL(album.id)" target="_blank">#{{album.title}}</a>
-        </li>
-      </ul>
       <div class="flex space-x-3 border-t pt-4 antialiased">
         <a :href="link" class="h-8 px-4 font-semibold rounded border border-slate-200 text-sm text-slate-900 hover:border-slate-400 flex items-center justify-center" target="_blank">查看原文</a>
         <button
@@ -45,7 +40,7 @@
 import {saveAs} from 'file-saver'
 import {Loader} from 'lucide-vue-next';
 import {formatTimeStamp, downloadArticleHTML, packHTMLAssets, formatItemShowType} from "~/utils";
-import type {AppMsgAlbumInfo, RGB} from "~/types/types";
+import type { RGB} from "~/types/types";
 
 
 interface Props {
@@ -57,8 +52,6 @@ interface Props {
   link: string
   isDeleted: boolean
   coverTheme?: RGB
-  isOriginal: boolean
-  albumInfos: AppMsgAlbumInfo[]
   itemShowType: number
 }
 
@@ -108,15 +101,11 @@ function copyLink(link: string) {
     copyBtnDisabled.value = false
   }, 1000)
 }
-
-function getAlbumURL(albumID: string | number) {
-  return `https://mp.weixin.qq.com/mp/appmsgalbum?__biz=${activeAccount.value?.fakeid}&action=getalbum&album_id=${albumID}`
-}
 </script>
 
 <style scoped>
-.original::before {
+/* .original::before {
   content: "【原创】";
   color: green;
-}
+} */
 </style>

@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import {Album, ChartNoAxesCombined, Download, Globe, Settings, HeartHandshake} from 'lucide-vue-next';
+import { Download, Settings } from 'lucide-vue-next';
 import {formatDistance} from "date-fns";
 import type {LogoutResponse} from "~/types/types";
 
@@ -98,11 +98,7 @@ const loginAccount = useLoginAccount()
 
 const items = ref([
   {name: '文章导出', icon: Download, href: '/dashboard/download'},
-  {name: '合集下载', icon: Album, href: '/dashboard/album'},
-  {name: '缓存分析', icon: ChartNoAxesCombined, href: '/dashboard/analytics'},
-  {name: '资源额度', icon: Globe, href: '/dashboard/usage'},
   {name: '设置', icon: Settings, href: '/dashboard/settings'},
-  {name: '技术支持', icon: HeartHandshake, href: '/dashboard/support'},
 ])
 
 const expire = loginAccount.value.expires

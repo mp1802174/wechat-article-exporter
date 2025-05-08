@@ -10,7 +10,6 @@
           <ArrowRightLeft :size="20" />
         </button>
       </div>
-<!--      <input type="file" @change="fileChange">-->
     </div>
     <div class="hidden space-x-5 lg:flex lg:items-center">
       <NuxtLink to="/dashboard/download"
@@ -170,23 +169,5 @@ function searchArticle() {
 
 function toggleHideDeleted(value: boolean) {
   emit('toggle:deleted', value)
-}
-
-// 为了调试
-function fileChange(evt: Event) {
-  const files = (evt.target as HTMLInputElement).files!
-  if (files.length > 0) {
-    const file = files[0]
-
-    const reader = new FileReader()
-    reader.addEventListener('load', async (event: Event) => {
-      const html = reader.result as string
-
-      debugger
-
-      await packHTMLAssets(html, 'title')
-    })
-    reader.readAsText(file)
-  }
 }
 </script>

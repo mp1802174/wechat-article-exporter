@@ -4,9 +4,7 @@
       <h1 class="text-[28px] leading-[34px] text-slate-12 font-bold">设置</h1>
     </Teleport>
     <div class="flex-1 overflow-scroll">
-      <CredentialSetting />
       <ProxySetting />
-      <DownloadSetting />
       <div class="h-[30vh]"></div>
     </div>
   </div>

@@ -76,33 +76,8 @@ export interface PublishInfo {
     msgid: number
     copy_type: number
     copy_appmsg_id: number
-    sent_info: ArticleSentInfo
-    sent_result: ArticleSentResult
-    sent_status: ArticleSentStatus
     appmsg_info: AppMsgInfo[]
     appmsgex: AppMsgEx[]
-}
-
-export interface ArticleSentInfo {
-    func_flag: number
-    is_published: number
-    is_send_all: boolean
-    time: number
-}
-
-export interface ArticleSentResult {
-    msg_status: number
-    refuse_reason: string
-    update_time: number
-    reject_index_list: any[]
-}
-
-export interface ArticleSentStatus {
-    fail: number
-    progress: number
-    succ: number
-    total: number
-    userprotect: number
 }
 
 export interface AppMsgInfo {
@@ -122,17 +97,8 @@ export interface RGB {
     b: number
 }
 
-export interface AppMsgAlbumInfo {
-    album_id: number
-    id: string
-    tagSource: number
-    title: string
-}
-
 export interface AppMsgEx {
     aid: string
-    album_id: string
-    appmsg_album_infos: AppMsgAlbumInfo[]
     appmsgid: number
     author_name: string
     ban_flag: number

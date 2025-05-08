@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   ssr: false,
   runtimeConfig: {
     public: {
-      umamiWebsiteID: '',
+      // umamiWebsiteID will be removed
     }
   },
   app: {
